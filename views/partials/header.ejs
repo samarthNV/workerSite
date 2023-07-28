@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/9f84562e7d.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="../public/css/styles.css" type="text/css">
+    <link rel="stylesheet" href="css/styles.css" type="text/css">
     <link href="https://assets.website-files.com/62aee78456e4207786ac4d18/62b0fad1a8cf6a4c26b3cb5e_Faivcon%2032.svg"
         rel="shortcut icon" type="image/x-icon" />
     <title>Document</title>
@@ -16,10 +16,12 @@
     <nav>
         <a href="" class="title-logo">EasyWork</a>
         <div class="nav-content">
-            <a href="">Home</a>
-            <a href="">Tasks</a>
-            <a href="">Notifications</a>
-            <a href="">Profile</a>
-            <button class="nav-btn">Logout</button>
+            <a href="/home">Home</a>
+            <a href="/tasks">Tasks</a>
+            <a href="/notifications">Notifications</a>
+            <a href="/profile">Profile</a>
+            <form action="/logout" method="get">
+                <button class="nav-btn">Logout</button>
+            </form>
         </div>
     </nav>

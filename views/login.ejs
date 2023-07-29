@@ -28,16 +28,17 @@
     <main>
         <div class="container">
             <h2>Login</h2>
-            <form action="/home" method="post">
+            <form action="/login" method="post">
                 <div class="login-input">
                     <label for="email1">Email :</label>
-                    <input type="email" name="email" id="email1" placeholder="Enter your email">
+                    <input type="email" name="emaill" id="email1" placeholder="Enter your email">
                 </div>
                 <div class="login-input">
                     <label for="password1">Password :</label>
-                    <input type="password" name="password" id="password1" placeholder="Enter your password">
+                    <input type="password" name="passwordl" id="password1" placeholder="Enter your password">
                 </div>
                 <button type="submit" class="login-btn">LOGIN</button>
+                <br><p><%= locals.message %></p>
             </form>
         </div>
     </main>

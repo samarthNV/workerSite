@@ -4,19 +4,21 @@
     <main style="background-color: var(--color-white);">
         <div class="container-task">
             <h2>Add task</h2>
-            <div class="login-input">
-                <label for="task">Task :</label>
-                <input type="text" id="task" placeholder="Enter your task">
-            </div>
-            <div class="login-input">
-                <label for="domain">Domain :</label>
-                <input type="password" id="domain" placeholder="Enter your domain">
-            </div>
-            <div class="login-input">
-                <label for="description">Domain :</label>
-                <textarea id="description" cols="30" rows="5" placeholder="Describe your task"></textarea>
-            </div>
-            <button type="submit" class="add-task-btn" style="margin-top: 20px;">ADD</button>
+            <form action="/tasks" method="post">
+                <div class="login-input">
+                    <label for="task">Task :</label>
+                    <input type="text" id="task" name="task" placeholder="Enter your task">
+                </div>
+                <div class="login-input">
+                    <label for="domain">Domain :</label>
+                    <input type="text" id="domain" name="domain" placeholder="Enter your domain">
+                </div>
+                <div class="login-input">
+                    <label for="description">Description :</label>
+                    <textarea id="description" cols="30" rows="5" name="description" placeholder="Describe your task"></textarea>
+                </div>
+                <button type="submit" class="add-task-btn" style="margin-top: 20px;">ADD</button>
+            </form>
         </div>
     </main>
 </body>

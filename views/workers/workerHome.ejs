@@ -1,0 +1,25 @@
+<%- include("../partials/headerWorker") -%>
+
+    <div class="main-content">
+        <br><br>
+        <div class="task-title">
+            <h1>Available work</h1>
+        </div>
+        <div class="home-desc">
+            <% taskArray.forEach(function(array){ %>
+                <div class="home-card">
+                    <h2 class="home-card-title"><%= array.task %></h2>
+                    <h3 class="home-card-category">Category : <%= array.domain %></h3>
+                    <p class="home-card-date">Date Published : <%= array.todate %></p>
+                    <p class="home-card-number">15 Workers applied!</p>
+                    <form action="/taskAdd" method="post">
+                        <div class="task-btn">
+                            <button name="mark" value="<%= array.task %>">Apply for task</button>
+                        </div>
+                    </form>
+                </div>
+            <% }); %>
+        </div>
+    </div>
+</body>
+</html>

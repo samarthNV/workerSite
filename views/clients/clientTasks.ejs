@@ -1,4 +1,4 @@
-<%- include("partials/header") -%>
+<%- include("../partials/headerClient") -%>
 
     <div class="main-content">
         <br><br>
@@ -13,7 +13,7 @@
                 <p class="home-card-date">Date Published : <%= array.todate %></p>
                 <p class="home-card-number">15 Workers applied!</p>
                 <div class="task-btn">
-                    <button href="/post/">View Details</button>
+                    <a href="/taskName/<%= array.task %>"><button>View Details</button></a>
                     <form action="/taskPrev" method="post">
                         <button type="submit" name="mark" value="<%= array.task %>" >Mark as Completed!</button> 
                     </form>

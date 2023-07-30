@@ -61,7 +61,7 @@ main{
   margin: auto;
   text-align: center;
   width: 40%;
-  height: 400px;
+  height: 460px;
   background-color: var(--color-white);
   margin-top: 5%;
   padding: 25px;
@@ -81,7 +81,7 @@ main{
   margin: auto;
   text-align: center;
   width: 40%;
-  height: 420px;
+  height: 470px;
   background-color: var(--color-white);
   margin-top: 5%;
   padding: 25px;
@@ -136,6 +136,30 @@ main{
   border-radius: 5px;
   background-color: var(--color-black);
   margin-top: 50px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.login-btns{
+  background-color: var(--color-black);
+  color: var(--color-white);
+  padding: 5px;
+  align-items: center;
+  border-radius: 5px;
+  background-color: var(--color-black);
+  margin-top: 30px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.login-btnr{
+  background-color: var(--color-black);
+  color: var(--color-white);
+  padding: 5px;
+  align-items: center;
+  border-radius: 5px;
+  background-color: var(--color-black);
+  margin-top: 20px;
   padding-left: 10px;
   padding-right: 10px;
 }

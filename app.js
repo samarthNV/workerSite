@@ -1,42 +1,18 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const cookieParser = require("cookie-parser");
-const jwt = require("jsonwebtoken")
-const bcrypt = require("bcrypt")
-const date = require(__dirname + "/date.js");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+const _ = require("lodash");
 
 const port_no =  process.env.PORT || 27017;
 
 mongoose.connect("mongodb://127.0.0.1:27017/", {
-    dbName: "WorkerConnect",
+  dbName: "WorkerConnect",
 })
 .then(() => {console.log("Database Connected.")})
 .catch((e) => {console.log(e)});
-
-const userSchema = new mongoose.Schema({
-    name: String,
-    email: String,
-    password: String,
-})
-
-const taskSchema = new mongoose.Schema({
-    task: String,
-    domain: String,
-    description: String,
-    todate: String,
-})
-
-const preTaskSchema = new mongoose.Schema({
-  task: String,
-  domain: String,
-  description: String,
-  todate: String,
-})
-
-const User = mongoose.model("User-info", userSchema);
-const Task = mongoose.model("Task-info", taskSchema);
-const PreTask = mongoose.model("PreTask-info", preTaskSchema);
 
 const app = express();
 
@@ -45,7 +21,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
 app.use(cookieParser());
 
-let person = 0;
+var person = 0;
 
 const isAuthenticated = async (req, res, next) => {
     const { token } = req.cookies;
@@ -59,7 +35,7 @@ const isAuthenticated = async (req, res, next) => {
   };
 
 app.get("/home", isAuthenticated, (req, res) => {
-    res.render("clientHome");
+    res.render("clients/clientHome");
 })
 
 app.get("/login", (req, res) => {
@@ -79,15 +55,16 @@ app.get("/register", (req, res) => {
 })
 
 app.get("/profile", (req, res) => {
-    res.render("clientProfile", {
+    res.render("clients/clientProfile", {
       name: person.name, 
       email: person.email,
+      prof: person.prof,
     });
 })
 
 app.get("/notifications", async (req, res) => {
   let taskArray = await Task.find();
-    res.render("clientNotify", {
+    res.render("clients/clientNotify", {
       taskArray: taskArray,
       message: "Your task was successfully uploaded !",
     });
@@ -96,18 +73,80 @@ app.get("/notifications", async (req, res) => {
 app.get("/tasks", async (req, res) => {
     let taskArray = await Task.find();
     let previousTask = await PreTask.find();
-    res.render("clientTasks", {
+    res.render("clients/clientTasks", {
         taskArray: taskArray,
         previousTask: previousTask,
     });
 })
 
 app.get("/addTask", (req, res) => {
-    res.render("clientAddTask");
+    res.render("clients/clientAddTask");
+})
+
+app.get("/taskName/:taskNames", async function(req, res){
+  let taskName = _.lowerCase(req.params.taskNames);
+  let taskArray = await Task.find();
+  taskArray.forEach(function(element){
+    let btask = _.lowerCase(element.task);
+    if(btask === taskName){
+      res.render("clients/task", {
+        taskName: element.task,
+        domainName: element.domain,
+        descName: element.description,
+        dateName: element.todate.substring(4, 24),
+      })
+    }
+  })
+})
+
+app.get("/taskWorker/:taskNames", async function(req, res){
+  let taskName = _.lowerCase(req.params.taskNames);
+  let taskArray = await Task.find();
+  taskArray.forEach(function(element){
+    let btask = _.lowerCase(element.task);
+    if(btask === taskName){
+      res.render("workers/task", {
+        taskName: element.task,
+        domainName: element.domain,
+        descName: element.description,
+        dateName: element.todate.substring(4, 24),
+      })
+    }
+  })
+})
+
+app.get("/homeWorker", isAuthenticated, async (req, res) => {
+  let taskArray = await Task.find();
+  res.render("workers/workerHome", {
+    taskArray: taskArray,
+  });
+})
+
+app.get("/profileWorker", (req, res) => {
+  res.render("workers/workerProfile", {
+    name: person.name, 
+    email: person.email,
+    prof: person.prof,
+  });
+})
+
+app.get("/notificationsWorker", async (req, res) => {
+let wTask = await workerTask.find();
+  res.render("workers/workerNotify", {
+    wTask: wTask,
+    message: "You have applied for the task.",
+  });
+})
+
+app.get("/work", async (req, res) => {
+  let wTask = await workerTask.find();
+  res.render("workers/workerWork", {
+      wTask: wTask,
+  });
 })
 
 app.post("/login", async (req, res) => {
-    const { emaill, passwordl } = req.body;
+    const { emaill, passwordl, profl } = req.body;
   
     let user = await User.findOne({email : emaill });
   
@@ -117,6 +156,9 @@ app.post("/login", async (req, res) => {
   
     if (!isMatch)
       return res.render("login", { email : emaill, message: "Incorrect Password" });
+
+    if ( _.lowerCase(profl) != _.lowerCase(user.prof))
+      return res.render("login", { email : emaill, message: "Incorrect Profession" });
   
     const token = jwt.sign({ _id: user._id }, "secretKey");
   
@@ -124,31 +166,36 @@ app.post("/login", async (req, res) => {
       httpOnly: true,
       expires: new Date(Date.now() + 100 * 1000),
     });
-    res.redirect("/home");
+
+    if( _.lowerCase(profl) === "client"){
+      res.redirect("/home");
+    }else{
+      res.redirect("/homeWorker");
+    }
+    
   });
 
 app.post("/register", async (req, res) => {
-    const { name, email, password } = req.body;
+    const { name, email, password, prof } = req.body;
   
     let user = await User.findOne({email : email });
     if (user) {
       return res.redirect("/login");
     }
     const hashedPassword = await bcrypt.hash(password, 10);
-  
-    user = await User.create({
-      name,
-      email,
-      password: hashedPassword,
-    });
-  
-    const token = jwt.sign({ _id: user._id }, "secretKey");
-  
-    res.cookie("token", token, {
-      httpOnly: true,
-      expires: new Date(Date.now() + 100 * 1000),
-    });
-    res.redirect("/home");
+
+    if (_.lowerCase(prof) == "worker" || _.lowerCase(prof) == "client"){
+      user = await User.create({
+        name,
+        email,
+        password: hashedPassword,
+        prof,
+      });
+      res.redirect("/login");
+    }else{
+      return res.render("register", { name : name, email : email, message: "Only Client or Worker" });
+    }
+      
 });
 
 app.post("/tasks", async (req, res) => {
@@ -156,9 +203,8 @@ app.post("/tasks", async (req, res) => {
     let textdate = new Date(Date.now());
     let todate = textdate.toString();
     todate = todate.substring(4, 24);
-    console.log(todate);
 
-    task = await Task.create({
+    ntask = await Task.create({
         task,
         domain,
         description,
@@ -177,18 +223,16 @@ app.post("/taskPrev", async (req, res) => {
   res.redirect("/tasks");
 })
 
-app.get("/task/:taskNames", function(req, res){
-    let taskName = _.lowerCase(req.params.taskNames);
-    tasks.forEach(function(element){
-      let bTitle = _.lowerCase(element.title);
-      if(bTitle === postName){
-        res.render("post", {
-          blogTitle: element.title,
-          blogContent: element.content,
-        })
-      }
-    })
-  })
+app.post("/taskAdd", async (req, res) => {
+  let mark = req.body.mark;
+  let prtask = await Task.findOne({task : mark});
+  let textdate = new Date(Date.now());
+  let ntodate = textdate.toString();
+  ntodate = ntodate.substring(4, 24);
+  prtask.todate = ntodate;
+  wTask = await workerTask.insertMany(prtask);
+  res.redirect("/work");
+})
 
 app.listen( port_no, () => {
     console.log("Server has started on PORT 27017");

@@ -1,0 +1,18 @@
+<%- include("../partials/headerClient") -%>
+
+    <div class="main-content">
+        <br><br>
+        <div class="notify-title">
+            <h1>Notifications</h1>
+        </div>
+        <div class="notify-desc">
+            <% taskArray.forEach(function(array){ %>
+            <div class="notify-card">
+                <p><%= message %></p>
+                <p><%= array.todate.substring(12,20) %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%= array.todate.substring(0,11) %></p>
+            </div>
+            <% }); %>
+        </div>
+    </div>
+</body>
+</html>

@@ -4,7 +4,13 @@ const mongoose = require('mongoose');
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const path = require('path');
 const _ = require("lodash");
+
+const User = require('./models/user');
+const Task = require('./models/task');
+const Work = require('./models/work');
+const PreTask = require('./models/preTask');
 
 const port_no =  process.env.PORT || 27017;
 
@@ -131,7 +137,7 @@ app.get("/profileWorker", (req, res) => {
 })
 
 app.get("/notificationsWorker", async (req, res) => {
-let wTask = await workerTask.find();
+let wTask = await Work.find();
   res.render("workers/workerNotify", {
     wTask: wTask,
     message: "You have applied for the task.",
@@ -139,7 +145,7 @@ let wTask = await workerTask.find();
 })
 
 app.get("/work", async (req, res) => {
-  let wTask = await workerTask.find();
+  let wTask = await Work.find();
   res.render("workers/workerWork", {
       wTask: wTask,
   });
